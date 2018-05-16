@@ -33,7 +33,7 @@ class ControllerExtensionPaymentKiTPayme extends Controller {
 				'merchant_id' 			=> $this->config->get('payment_kit_payme_merchant_id'),
 				'order_id'				=> $out_trade_no,
 				'total'					=> (int) $order_info['total']*100,
-				'Redirect'				=> str_replace('admin/', '', HTTPS_SERVER)."?route=extension/payment/kit_payme&f=OrderReturn",
+				'Redirect'				=> str_replace('admin/', '', HTTPS_SERVER)."?route=extension/payment/kit_payme_cart&f=OrderReturn",
 				//'merchant_key'   		=> $this->config->get('payment_kit_payme_enabled')=='Y'?$this->config->get('payment_kit_payme_merchant_private_key_test'):$this->config->get('payment_kit_payme_merchant_private_key'),
 				'gateway_url'           => $this->config->get('payment_kit_payme_enabled')=='Y'?$this->config->get('payment_kit_payme_checkout_url_test'):$this->config->get('payment_alipay_merchant_private_key'),
 				'pay_time'				=> $this->config->get('payment_kit_payme_callback_pay_time'),
@@ -94,7 +94,9 @@ class ControllerExtensionPaymentKiTPayme extends Controller {
 		//$Url = "{$config['gateway_url']}&m={$config['merchant_id']}&ac.order_id={$config['order_id']}&a={$config['total']}&l=ru&c={$config['Redirect']}&order_id={$config['order_id']}&ct={$config['pay_time']}";		
 		
 		//$Url = "{$_GET['merchantUrl']}/".base64_encode("m={$_GET['merchantId']};ac.order_id={$return['id']};a={$_GET['Amount']};l=ru;c={$_GET['Redirect']}?order_id={$return['id']};ct={$_GET['callback_timeout']}");
-		$Url = "{$this->request->get['gateway_url']}/".base64_encode("m={$this->config->get('payment_kit_payme_merchant_id')};ac.order_id={$return['id']};a={$this->request->get['total']};l=ru;ct={$this->request->get['pay_time']};c={$this->request->get['Redirect']}&order_id={$return['id']}&f=OrderReturn");
+		$gateway_url = $this->config->get('payment_kit_payme_enabled')=='Y'?$this->config->get('payment_kit_payme_checkout_url_test'):$this->config->get('payment_kit_payme_checkout_url');
+		
+		$Url = "{$gateway_url}/".base64_encode("m={$this->config->get('payment_kit_payme_merchant_id')};ac.order_id={$return['id']};a={$this->request->get['total']};l=ru;ct={$this->request->get['pay_time']};c={$this->request->get['Redirect']}&order_id={$return['id']}&f=OrderReturn");
 						
 		$this->load->model('checkout/order');
 		$this->model_checkout_order->addOrderHistory($this->request->get['order_id'], 1 );

@@ -83,6 +83,7 @@ class Payme
 			}
 			else
 				$Param = $this->Error($Get['id'], '-31001', __METHOD__.':amount');
+			
 			break;
 		}
 		
